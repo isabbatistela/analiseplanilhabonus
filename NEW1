@@ -1,0 +1,23 @@
+import pandas as pd
+from twilio.rest import Client
+
+account_sid = 'AC02e089cd632d2af16ccb3ebdb7ad7be3'
+auth_token = 'f87ec3a44781926161ffaddcc69382b4'
+client = Client(account_sid, auth_token)
+
+#Solução Planilha Bonus
+
+lista_meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho']
+
+for mes in lista_meses:
+    tabela_vendas = pd.read_excel(f'{mes}.xlsx')
+    if (tabela_vendas ['Vendas'] >55000).any():
+        vendedor = tabela_vendas.loc[tabela_vendas ['Vendas'] >55000, 'Vendedor'].values[0]
+        vendas = tabela_vendas.loc[tabela_vendas ['Vendas'] >55000, 'Vendas'].values[0]
+        print (f' No mês de {mes} alguém bateu a meta. Vendedor: {vendedor}, Vendas: {vendas}.')
+        message = client.messages.create(
+            body=f' No mês de {mes} alguém bateu a meta. Vendedor: {vendedor}, Vendas: {vendas}.',
+            from_='+17315061301',
+            to='+5518996095211'
+        )
+        print(message.sid)
